@@ -3,6 +3,7 @@ import EventsListView from '../view/events-list-view.js';
 import EventsItemView from '../view/events-item-view.js';
 import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
+import { mockOffersByType } from '../mock/offers.js';
 
 export default class EventsPresenter {
   eventsComponent = new EventsListView();
@@ -13,14 +14,16 @@ export default class EventsPresenter {
     render(content, itemElement.getElement());
   };
 
-  init = (eventsContainer) => {
+  init = (eventsContainer, pointsModel) => {
     this.eventsContainer = eventsContainer;
+    this.pointsModel = pointsModel;
+    this.mainPoints = [...this.pointsModel.getPoints()];
 
-    for (let i = 0; i < 3; i++) {
-      this.renderEventsItem(new PointView());
-    }
+    this.mainPoints.forEach((point) => {
+      this.renderEventsItem(new PointView(point));
+    });
 
     render(this.eventsComponent, this.eventsContainer);
-    this.renderEventsItem(new EditFormView(), RenderPosition.AFTERBEGIN);
+    this.renderEventsItem(new EditFormView(this.mainPoints[0], mockOffersByType), RenderPosition.AFTERBEGIN);
   };
 }
