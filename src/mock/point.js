@@ -14,7 +14,6 @@ const generateDate = () => {
 
 export const generatePoint = () => {
   const datePoint = generateDate();
-  
   return {
     basePrice: getRandomInteger(basePrice.MIN, basePrice.MAX),
     dateFrom: datePoint.dateFrom,
