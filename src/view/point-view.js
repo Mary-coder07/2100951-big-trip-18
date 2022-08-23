@@ -83,6 +83,7 @@ export default class ListPointView {
     }
     return this.element;
   }
+
   removeElement() {
     this.element = null;
   }

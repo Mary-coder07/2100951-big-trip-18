@@ -18,10 +18,10 @@ const getDestinations = (count) => {
     for (let i = 0; i < count; i++) {
         dests.push(generateDestination(i));
     }
+    
     return dests;
 };
 
 const destinations = getDestinations(CITIES.length);
-
 
 export { destinations };
