@@ -3,27 +3,71 @@ import EventsListView from '../view/events-list-view.js';
 import EventsItemView from '../view/events-item-view.js';
 import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
-import { mockOffersByType } from '../mock/offers.js';
 
 export default class EventsPresenter {
-  eventsComponent = new EventsListView();
+  #eventsContainer = null;
+  #pointsModel = null;
+  #mainPoints = null;
+  #eventsComponent = new EventsListView();
 
   renderEventsItem = (content, place = RenderPosition.BEFOREEND) => {
     const itemElement = new EventsItemView();
-    render(itemElement, this.eventsComponent.getElement(), place);
-    render(content, itemElement.getElement());
+    render(itemElement, this.#eventsComponent.element, place);
+    render(content, itemElement.element);
+  };
+
+
+  #renderPoint = (point) => {
+    const pointComponent = new PointView(point);
+    const pointEditComponent = new EditFormView(point);
+
+    const eventEditBtn = pointComponent.element.querySelector('.event__rollup-btn');
+    const cancelEditBtn = pointEditComponent.element.querySelector('.event__reset-btn');
+
+    const replacePointToForm = () => {
+      pointComponent.element.parentNode.replaceChild(pointEditComponent.element, pointComponent.element);
+    };
+
+    const replaceFormToPoint = () => {
+      pointEditComponent.element.parentNode.replaceChild(pointComponent.element, pointEditComponent.element);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    eventEditBtn.addEventListener('click', () => {
+      replacePointToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    cancelEditBtn.addEventListener('click', () => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.element.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    this.renderEventsItem(pointComponent);
   };
 
   init = (eventsContainer, pointsModel) => {
-    this.eventsContainer = eventsContainer;
-    this.pointsModel = pointsModel;
-    this.mainPoints = [...this.pointsModel.getPoints()];
+    this.#eventsContainer = eventsContainer;
+    this.#pointsModel = pointsModel;
+    this.#mainPoints = [...this.#pointsModel.tasks];
 
-    this.mainPoints.forEach((point) => {
-      this.renderEventsItem(new PointView(point));
+    this.#mainPoints.forEach((point) => {
+      this.#renderPoint(point);
     });
 
-    render(this.eventsComponent, this.eventsContainer);
-    this.renderEventsItem(new EditFormView(this.mainPoints[0], mockOffersByType), RenderPosition.AFTERBEGIN);
+    render(this.#eventsComponent, this.#eventsContainer);
   };
 }
