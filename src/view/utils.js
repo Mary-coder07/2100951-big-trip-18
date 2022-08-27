@@ -11,21 +11,31 @@ function getRandomElementsFromArray(arr) {
   const maxLength = arr.length;
   const lengthOfArray = getRandomInteger(1, maxLength);
   const elements = [];
+
   for (let i = elements.length; i < lengthOfArray; i++) {
     const indexOfElement = getRandomInteger(0, maxLength - 1);
     const element = arr[indexOfElement];
+
     if (!elements.includes(element)) {
       elements.push(element);
     }
   }
   return elements;
 }
+
 function ucFirst(str) {
   if (!str) {
     return str;
   }
+
   return str[0].toUpperCase() + str.slice(1);
 }
+
+const getTimeFromMins = (mins) => {
+  const hours = Math.trunc(mins / 60);
+  const minutes = mins % 60;
+  return `${hours}H ${minutes}M`;
+};
 
 const humanizeDateDDMMYYHHmm = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const humanizeDateHHmm = (date) => dayjs(date).format('HH:mm');
@@ -37,5 +47,6 @@ export {
   humanizeDateMMMDD,
   humanizeDateDDMMYYHHmm,
   getRandomElementsFromArray,
-  ucFirst
+  ucFirst,
+  getTimeFromMins,
 };
