@@ -5,6 +5,6 @@ export default class PointsModel {
   #points = Array.from({ length: SUM_POINTS }, generatePoint);
 
   get tasks() {
-  return this.#points;
+    return this.#points;
   }
 }

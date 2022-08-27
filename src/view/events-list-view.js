@@ -13,7 +13,6 @@ export default class EventsListView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 

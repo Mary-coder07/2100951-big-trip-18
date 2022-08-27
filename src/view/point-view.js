@@ -46,7 +46,7 @@ const listPointTemplate = (point) => {
           —
           <time class="event__end-time" datetime="2019-03-18T11:00">${humanizeDateHHmm(dateFrom)}</time>
         </p>
-        <p class="event__duration">${getTimeFromMins(dateTo.diff(dateFrom, 'minute' ))}</p>
+        <p class="event__duration">${getTimeFromMins(dateTo.diff(dateFrom, 'minute'))}</p>
       </div>
       <p class="event__price">
         €&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -84,7 +84,6 @@ export default class PointView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 
