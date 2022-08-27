@@ -3,6 +3,8 @@ import EventsListView from '../view/events-list-view.js';
 import EventsItemView from '../view/events-item-view.js';
 import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
+import SortView from '../view/sort-view.js';
+import NoEventView from '../view/no-events-view.js';
 
 export default class EventsPresenter {
   #eventsContainer = null;
@@ -64,10 +66,15 @@ export default class EventsPresenter {
     this.#pointsModel = pointsModel;
     this.#mainPoints = [...this.#pointsModel.tasks];
 
-    this.#mainPoints.forEach((point) => {
-      this.#renderPoint(point);
-    });
+    if (this.#mainPoints.length) {
+      render(new SortView(), this.#eventsContainer);
+      render(this.#eventsComponent, this.#eventsContainer);
 
-    render(this.#eventsComponent, this.#eventsContainer);
+      this.#mainPoints.forEach((point) => {
+        this.#renderPoint(point);
+      });
+    } else {
+      render(new NoEventView(), this.#eventsContainer);
+    }
   };
 }
