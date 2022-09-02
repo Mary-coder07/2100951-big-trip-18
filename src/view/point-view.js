@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';;
+import AbstractView from '../framework/view/abstract-view.js';
 import { mockOffers } from '../mock/offers.js';
 import { destinations } from '../mock/destination.js';
 import { humanizeDateHHmm, humanizeDateMMMDD, getTimeFromMins } from '../utils/points.js';

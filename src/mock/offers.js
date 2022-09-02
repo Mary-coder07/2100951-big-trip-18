@@ -1,5 +1,5 @@
 import { EXTRA_OFFERS, TYPES, offerPrice } from './consts.js';
-import { getRandomInteger, getRandomElementsFromArray } from '../utils/utils.js';
+import { getRandomInteger, getRandomElementsFromArray } from '../utils/common.js';
 
 const generateOffer = (id) => ({
   id,

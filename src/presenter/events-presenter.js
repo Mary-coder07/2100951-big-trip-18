@@ -1,4 +1,4 @@
-import { replace, render } from '../framework/render.js';;
+import { replace, render } from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsItemView from '../view/events-item-view.js';
 import EditFormView from '../view/edit-form-view.js';
@@ -22,15 +22,6 @@ export default class EventsPresenter {
     const pointComponent = new PointView(point);
     const pointEditComponent = new EditFormView(point);
 
-    const replacePointToForm = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const replaceFormToPoint = () => {
-      replace(pointComponent, pointEditComponent);      
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
-
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
@@ -38,6 +29,17 @@ export default class EventsPresenter {
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
+    
+    const replacePointToForm = () => {
+      replace(pointEditComponent, pointComponent);
+    };
+
+    const replaceFormToPoint = () => {
+      replace(pointComponent, pointEditComponent);
+      document.removeEventListener('keydown', onEscKeyDown);
+    };
+
+
 
     pointComponent.setEditClickHandler(() => {
       replacePointToForm();
