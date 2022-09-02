@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -23,30 +21,7 @@ function getRandomElementsFromArray(arr) {
   return elements;
 }
 
-function ucFirst(str) {
-  if (!str) {
-    return str;
-  }
-
-  return str[0].toUpperCase() + str.slice(1);
-}
-
-const getTimeFromMins = (mins) => {
-  const hours = Math.trunc(mins / 60);
-  const minutes = mins % 60;
-  return `${hours}H ${minutes}M`;
-};
-
-const humanizeDateDDMMYYHHmm = (date) => dayjs(date).format('DD/MM/YY HH:mm');
-const humanizeDateHHmm = (date) => dayjs(date).format('HH:mm');
-const humanizeDateMMMDD = (date) => dayjs(date).format('MMM DD');
-
 export {
   getRandomInteger,
-  humanizeDateHHmm,
-  humanizeDateMMMDD,
-  humanizeDateDDMMYYHHmm,
   getRandomElementsFromArray,
-  ucFirst,
-  getTimeFromMins,
 };

@@ -1,10 +1,10 @@
-import { RenderPosition, render } from '../render.js';
+import { replace, render } from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsItemView from '../view/events-item-view.js';
 import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
 import SortView from '../view/sort-view.js';
-import NoEventView from '../view/no-events-view.js';
+import NoEventsView from '../view/no-events-view.js';
 
 export default class EventsPresenter {
   #eventsContainer = null;
@@ -12,26 +12,22 @@ export default class EventsPresenter {
   #mainPoints = null;
   #eventsComponent = new EventsListView();
 
-  renderEventsItem = (content, place = RenderPosition.BEFOREEND) => {
+  renderEventsItem = (content) => {
     const itemElement = new EventsItemView();
-    render(itemElement, this.#eventsComponent.element, place);
+    render(itemElement, this.#eventsComponent.element);
     render(content, itemElement.element);
   };
-
 
   #renderPoint = (point) => {
     const pointComponent = new PointView(point);
     const pointEditComponent = new EditFormView(point);
 
-    const eventEditBtn = pointComponent.element.querySelector('.event__rollup-btn');
-    const cancelEditBtn = pointEditComponent.element.querySelector('.event__reset-btn');
-
     const replacePointToForm = () => {
-      pointComponent.element.parentNode.replaceChild(pointEditComponent.element, pointComponent.element);
+      replace(pointEditComponent, pointComponent);
     };
 
     const replaceFormToPoint = () => {
-      pointEditComponent.element.parentNode.replaceChild(pointComponent.element, pointEditComponent.element);
+      replace(pointComponent, pointEditComponent);
     };
 
     const onEscKeyDown = (evt) => {
@@ -42,20 +38,17 @@ export default class EventsPresenter {
       }
     };
 
-    eventEditBtn.addEventListener('click', () => {
+    pointComponent.setEditClickHandler(() => {
       replacePointToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    cancelEditBtn.addEventListener('click', () => {
+    pointEditComponent.setCancelEditClickHandler(() => {
       replaceFormToPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    pointEditComponent.element.addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    pointEditComponent.setSubmitHandler(() => {
       replaceFormToPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
     });
 
     this.renderEventsItem(pointComponent);
@@ -74,7 +67,7 @@ export default class EventsPresenter {
         this.#renderPoint(point);
       });
     } else {
-      render(new NoEventView(), this.#eventsContainer);
+      render(new NoEventsView(), this.#eventsContainer);
     }
   };
 }
