@@ -1,8 +1,8 @@
-import { createElement } from '../render.js';
-import { humanizeDateDDMMYYHHmm, ucFirst } from '../view/utils.js';
+import { humanizeDateDDMMYYHHmm, ucFirst } from '../utils/points.js';
 import { TYPES, CITIES } from '../mock/consts.js';
 import { destinations } from '../mock/destination.js';
 import { mockOffersByType } from '../mock/offers.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const editPointTemplate = (point) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers } = point;
@@ -111,11 +111,11 @@ const editPointTemplate = (point) => {
   `);
 };
 
-export default class EditPointView {
-  #element = null;
+export default class EditFormView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
@@ -123,15 +123,23 @@ export default class EditPointView {
     return editPointTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setCancelEditClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickHandler);
+  };
 
-    return this.#element;
-  }
+  setSubmitHandler = (callback) => {
+    this._callback.submit = callback;
+    this.element.addEventListener('submit', this.#submitHandler);
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
+
+  #submitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.submit();
+  };
 }

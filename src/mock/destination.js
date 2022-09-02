@@ -1,5 +1,5 @@
 import { CITY_DESC, CITIES } from './consts.js';
-import { getRandomInteger, getRandomElementsFromArray } from '../view/utils.js';
+import { getRandomInteger, getRandomElementsFromArray } from '../utils/utils.js';
 
 const generateDestination = (id) => ({
   id,
