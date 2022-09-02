@@ -22,6 +22,14 @@ export default class EventsPresenter {
     const pointComponent = new PointView(point);
     const pointEditComponent = new EditFormView(point);
 
+    const replacePointToForm = () => {
+      replace(pointEditComponent, pointComponent);
+    };
+
+    const replaceFormToPoint = () => {
+      replace(pointComponent, pointEditComponent);
+    };
+
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
@@ -29,17 +37,6 @@ export default class EventsPresenter {
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
-    
-    const replacePointToForm = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const replaceFormToPoint = () => {
-      replace(pointComponent, pointEditComponent);
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
-
-
 
     pointComponent.setEditClickHandler(() => {
       replacePointToForm();
