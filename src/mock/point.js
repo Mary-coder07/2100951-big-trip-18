@@ -1,5 +1,5 @@
 import { getRandomInteger } from '../utils/common.js';
-import { TYPES, EXTRA_OFFERS, basePrice, destinationId } from './consts.js';
+import { TYPES, EXTRA_OFFERS, basePrice, CITIES } from './consts.js';
 import dayjs from 'dayjs';
 
 const generateDate = () => {
@@ -18,9 +18,9 @@ export const generatePoint = () => {
     basePrice: getRandomInteger(basePrice.MIN, basePrice.MAX),
     dateFrom: datePoint.dateFrom,
     dateTo: datePoint.dateTo,
-    destination: getRandomInteger(destinationId.MIN, destinationId.MAX),
+    destination: getRandomInteger(0, CITIES.length - 1),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: [...new Set(Array.from({length: getRandomInteger(0, EXTRA_OFFERS.length - 1)}, ()=> getRandomInteger(0, EXTRA_OFFERS.length - 1)))],
+    offers: [...new Set(Array.from({ length: getRandomInteger(0, EXTRA_OFFERS.length - 1) }, () => getRandomInteger(0, EXTRA_OFFERS.length - 1)))],
     type: TYPES[getRandomInteger(0, TYPES.length - 1)],
   };
 };
