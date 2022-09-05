@@ -4,7 +4,7 @@ import { getRandomInteger, getRandomElementsFromArray } from '../utils/common.js
 const generateDestination = (id) => ({
   id,
   description: getRandomElementsFromArray(CITY_DESC),
-  name: CITIES[getRandomInteger(0, CITIES.length - 1)],
+  name: CITIES[id],
   pictures: [
     {
       src: `http://picsum.photos/248/152?r=${getRandomInteger(0, 100)}`,
