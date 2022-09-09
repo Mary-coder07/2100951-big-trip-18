@@ -13,9 +13,9 @@ const pointsModel = new PointsModel();
 const eventsPresenter = new EventsPresenter(tripEventsElement, pointsModel);
 
 if (pointsModel.points.length) {
-    const filters = generateFilter(pointsModel.points);
+  const filters = generateFilter(pointsModel.points);
 
-    render(new FilterView(filters), filtersElement);
-};
+  render(new FilterView(filters), filtersElement);
+}
 
 eventsPresenter.init();

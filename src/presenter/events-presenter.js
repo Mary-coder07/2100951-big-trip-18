@@ -51,7 +51,7 @@ export default class EventsPresenter {
   };
 
   #renderContentList = () => {
-    render(this.#eventsComponent, this.#eventsContainer)
+    render(this.#eventsComponent, this.#eventsContainer);
   };
 
   #renderNewPoint = () => {
