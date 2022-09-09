@@ -1,4 +1,4 @@
-const SUM_POINTS = 3;
+const SUM_POINTS = 10;
 
 const CITY_DESC = [
   'Нет более гармоничного города в Европе, чем этот. Эпохи, стили, расы мирно сосуществуют на крохотной территории, половина из которой - вода. В переводе с голландского Амстердам означает "Дамба на реке Амстел',
@@ -56,6 +56,11 @@ const FilterType = {
   PAST: 'past',
 };
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export {
   CITY_DESC,
   CITIES,
@@ -64,5 +69,6 @@ export {
   offerPrice,
   basePrice,
   SUM_POINTS,
-  FilterType
+  FilterType,
+  Mode,
 };

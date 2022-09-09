@@ -9,10 +9,13 @@ const filtersElement = pageHeaderElement.querySelector('.trip-controls__filters'
 const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 
-const eventsPresenter = new EventsPresenter();
 const pointsModel = new PointsModel();
-const filters = generateFilter(pointsModel.tasks);
+const eventsPresenter = new EventsPresenter(tripEventsElement, pointsModel);
 
-render(new FilterView(filters), filtersElement);
+if (pointsModel.points.length) {
+    const filters = generateFilter(pointsModel.points);
 
-eventsPresenter.init(tripEventsElement, pointsModel);
+    render(new FilterView(filters), filtersElement);
+};
+
+eventsPresenter.init();
