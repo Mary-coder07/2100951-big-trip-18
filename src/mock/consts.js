@@ -61,6 +61,12 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+const SortType = {
+  DEFAULT: 'day',
+  TIME: 'time',
+  PTICE: 'price',
+};
+
 export {
   CITY_DESC,
   CITIES,
@@ -71,4 +77,5 @@ export {
   SUM_POINTS,
   FilterType,
   Mode,
+  SortType,
 };
