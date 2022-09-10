@@ -34,7 +34,8 @@ const listPointTemplate = (point) => {
   };
 
   return (`
-  <div class="event">
+  <li class="trip-events__item">
+    <div class="event">
       <time class="event__date" datetime="${dateFrom}">${humanizeDateMMMDD(dateFrom)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
@@ -42,11 +43,11 @@ const listPointTemplate = (point) => {
       <h3 class="event__title">${type} ${getDestinationName()}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">${humanizeDateHHmm(dateTo)}</time>
+          <time class="event__start-time" datetime="2019-03-18T10:30">${humanizeDateHHmm(dateFrom)}</time>
           —
-          <time class="event__end-time" datetime="2019-03-18T11:00">${humanizeDateHHmm(dateFrom)}</time>
+          <time class="event__end-time" datetime="2019-03-18T11:00">${humanizeDateHHmm(dateTo)}</time>
         </p>
-        <p class="event__duration">${getTimeFromMins(dateTo.diff(dateFrom, 'minute'))}</p>
+        <p class="event__duration">${getTimeFromMins(dateTo.diff(dateFrom, 'minute' ))}</p>
       </div>
       <p class="event__price">
         €&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -65,6 +66,7 @@ const listPointTemplate = (point) => {
         <span class="visually-hidden">Open event</span>
       </button>
     </div>
+   </li>
   `);
 };
 
@@ -88,5 +90,15 @@ export default class PointView extends AbstractView {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
+  };
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   };
 }

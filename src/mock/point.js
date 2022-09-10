@@ -1,6 +1,7 @@
 import { getRandomInteger } from '../utils/common.js';
 import { TYPES, EXTRA_OFFERS, basePrice, CITIES } from './consts.js';
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 
 const generateDate = () => {
   const dayGap = getRandomInteger(1, 31);
@@ -15,6 +16,7 @@ const generateDate = () => {
 export const generatePoint = () => {
   const datePoint = generateDate();
   return {
+    id: nanoid(),
     basePrice: getRandomInteger(basePrice.MIN, basePrice.MAX),
     dateFrom: datePoint.dateFrom,
     dateTo: datePoint.dateTo,
