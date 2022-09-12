@@ -7,8 +7,9 @@ const num = 60;
 
 const getTimeFromMins = (mins) => {
   const hours = Math.trunc(mins / num);
+  const days = Math.trunc(hours / 24);
   const minutes = mins % num;
-  return `${hours}H ${minutes}M`;
+  return `${days}D ${hours}H ${minutes}M`;
 };
 
 const ucFirst = (str) => {
