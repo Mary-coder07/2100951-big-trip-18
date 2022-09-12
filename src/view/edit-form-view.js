@@ -1,28 +1,21 @@
 import { humanizeDateDDMMYYHHmm, ucFirst } from '../utils/points.js';
 import { TYPES, CITIES } from '../mock/consts.js';
 import { destinations } from '../mock/destination.js';
-import { mockOffersByType } from '../mock/offers.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import { mockOffersByType, mockOffers } from '../mock/offers.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const editPointTemplate = (point) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers } = point;
 
-  const isOfferChecked = (offer) => offers.includes(offer.id) ? 'checked' : '';
+  const isOfferChecked = (offer) => offers.includes(offer) ? 'checked' : '';
 
   const createEditOfferTemplate = () => {
-    const destOffers = [];
-
-    for (const mockOffer of mockOffersByType) {
-
-      if (offers.includes(mockOffer.id)) {
-        destOffers.push(mockOffer);
-      }
-    }
-
-    return destOffers.map((offer) => `
+    const offersByType = mockOffersByType.filter((typeOffers) => typeOffers.type === type);
+    return offersByType[0].offers.map((offer) => `
       <div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isOfferChecked(offer)}>
-        <label class="event__offer-label" for="event-offer-luggage-1">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${isOfferChecked(offer)}>
+        <label class="event__offer-label" for="event-offer-${offer.id}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
@@ -32,6 +25,11 @@ const editPointTemplate = (point) => {
   };
 
   const offersTemplate = createEditOfferTemplate();
+
+  const createPhotoTemplate = (pictures) =>
+    pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
+
+  const photoTemplate = createPhotoTemplate(destinations[destination].pictures);
 
   const createEditTypeTemplate = (currentType) =>
     TYPES.map((iterationType) => `
@@ -43,10 +41,16 @@ const editPointTemplate = (point) => {
 
   const typesTemplate = createEditTypeTemplate(type);
 
-  const createDestinationListTemplate = (selectedCity) =>
-    CITIES.map((city) => `
+  const createDestinationListTemplate = (selectedCity) => `
+  <label class="event__label  event__type-output" for="event-destination-1">
+  ${type}
+  </label>
+  <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${selectedCity}" list="destination-list-1">
+  <datalist id="destination-list-1">
+  ${CITIES.map((city) => `
     <option value="${city}" ${selectedCity === city ? 'selected' : ''}></option>
-       `).join('');
+    `).join('')}
+   </datalist>`;
 
   const destListTemplate = createDestinationListTemplate(destinations[destination].name);
 
@@ -71,13 +75,7 @@ const editPointTemplate = (point) => {
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
-          ${type}
-          </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinations[destination].name}" list="destination-list-1">
-          <datalist id="destination-list-1">
           ${destListTemplate}
-          </datalist>
         </div>
 
         <div class="event__field-group  event__field-group--time">
@@ -114,24 +112,36 @@ const editPointTemplate = (point) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destinations[destination].description}</p>
-        </section>
+          <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${photoTemplate}
+            </div>
+        </div> 
+          </section>
       </section>
      </form>
     </li>
   `);
 };
 
-export default class EditFormView extends AbstractView {
-  #point = null;
+export default class EditFormView extends AbstractStatefulView {
 
   constructor(point) {
     super();
-    this.#point = point;
+    this._state = EditFormView.parsePointToState(point);
+
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return editPointTemplate(this.#point);
+    return editPointTemplate(this._state);
   }
+
+  reset = (point) => {
+    this.updateElement(
+      EditPointView.parsePointToState(point),
+    );
+  };
 
   setCancelEditClickHandler = (callback) => {
     this._callback.click = callback;
@@ -150,6 +160,58 @@ export default class EditFormView extends AbstractView {
 
   #submitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.submit();
+    this._callback.submit(EditFormView.parseStateToPoint(this._state));
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setEditClickHandler(this._callback.editClick);
+  };
+
+  #setInnerHandlers = () => {
+    Array.from(this.element.querySelectorAll('.event__type-input'))
+      .forEach((eventType) => eventType.addEventListener('click', this.#eventTypeToggleHandler));
+
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('change', this.#eventDestinationInputHandler);
+    Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
+      .forEach((eventType) => eventType.addEventListener('change', this.#eventSelectOffersToggleHandler));
+  };
+
+  #eventTypeToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value,
+      offers: [],
+    });
+  };
+
+  #eventDestinationInputHandler = (evt) => {
+    evt.preventDefault();
+    if (evt.target.value) {
+      this.updateElement({
+        destination: CITIES.indexOf(evt.target.value),
+      });
+    }
+  };
+
+  #eventSelectOffersToggleHandler = () => {
+    const selectOffers = [];
+    Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
+      .forEach((checkbox) => checkbox.checked ? selectOffers.push(mockOffers[Number(checkbox.dataset.id)]) : '');
+    this.updateElement({
+      offers: selectOffers,
+    });
+  };
+
+  static parsePointToState = (point) => ({
+    ...point,
+  });
+
+  static parseStateToPoint = (state) => {
+    const point = { ...state };
+
+    return point;
   };
 }
