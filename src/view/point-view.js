@@ -24,7 +24,7 @@ const listPointTemplate = (point) => {
         </li>
       `).join(' ');
 
-return (`
+  return (`
   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateFrom}">${humanizeDateMMMDD(dateFrom)}</time>
