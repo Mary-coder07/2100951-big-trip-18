@@ -3,6 +3,7 @@ import { TYPES, CITIES } from '../mock/consts.js';
 import { destinations } from '../mock/destination.js';
 import { mockOffersByType, mockOffers } from '../mock/offers.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const editPointTemplate = (point) => {
@@ -124,59 +125,96 @@ const editPointTemplate = (point) => {
   `);
 };
 
-export default class EditFormView extends AbstractStatefulView {
+export default class PointEditView extends AbstractStatefulView {
+  #offers = null;
+  #destinations = null;
+  #datepickerStart = null;
+  #datepickerEnd = null;
 
-  constructor(point) {
+  constructor(point, offers, destinations) {
     super();
-    this._state = EditFormView.parsePointToState(point);
+    this._state = PointEditView.parsePointToState(point);
+    this.#offers = offers;
+    this.#destinations = destinations;
 
     this.#setInnerHandlers();
   }
 
   get template() {
-    return editPointTemplate(this._state);
+    return editPointTemplate(this._state, this.#offers, this.#destinations);
   }
 
+  removeElement() {
+    super.removeElement();
+    if (this.#datepickerStart) {
+      this.#datepickerEnd = null;
+    }
+    if (this.#datepickerEnd) {
+      this.#datepickerStart = null;
+    }
+  }
+
+  #setDateStartPicker = () => {
+    if (this._state.dateFrom) {
+      this.#datepickerStart = flatpickr(
+        this.element.querySelector('#event-start-time-1'),
+        {
+          enableTime: true,
+          dateFormat: 'd/m/y / h:i',
+          defaultDate: this._state.dateFrom,
+          onChange: this.#dueDateStartChangeHandler
+        }
+      );
+    }
+  };
+
+  #setDateEndPicker = () => {
+    if (this._state.dateTo) {
+      this.#datepickerEnd = flatpickr(
+        this.element.querySelector('#event-end-time-1'),
+        {
+          enableTime: true,
+          dateFormat: 'd/m/y / h:i',
+          defaultDate: this._state.dateTo,
+          onChange: this.#dueDateEndChangeHandler,
+        }
+      );
+    }
+  };
+
+  #dueDateStartChangeHandler = (dateFrom) => {
+    this.updateElement({
+      dateFrom
+    });
+  };
+
+  #dueDateEndChangeHandler = (dateTo) => {
+    this.updateElement({
+      dateTo
+    });
+  };
+
+  #setDatePicker = () => {
+    this.#setDateStartPicker();
+    this.#setDateEndPicker();
+  };
+
+  static parsePointToState = (point) => ({...point});
+
+  static parseStateToPoint = (state) => ({...state});
+
   reset = (point) => {
-    this.updateElement(
-      EditFormView.parsePointToState(point),
-    );
-  };
-
-  setCancelEditClickHandler = (callback) => {
-    this._callback.click = callback;
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickHandler);
-  };
-
-  setSubmitHandler = (callback) => {
-    this._callback.submit = callback;
-    this.element.addEventListener('submit', this.#submitHandler);
-  };
-
-  #clickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.click();
-  };
-
-  #submitHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.submit(EditFormView.parseStateToPoint(this._state));
-  };
-
-  _restoreHandlers = () => {
-    this.#setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setEditClickHandler(this._callback.editClick);
+    this.updateElement(PointEditView.parsePointToState(point));
   };
 
   #setInnerHandlers = () => {
-    Array.from(this.element.querySelectorAll('.event__type-input'))
-      .forEach((eventType) => eventType.addEventListener('click', this.#eventTypeToggleHandler));
-
-    this.element.querySelector('.event__input--destination')
-      .addEventListener('change', this.#eventDestinationInputHandler);
-    Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
-      .forEach((eventType) => eventType.addEventListener('change', this.#eventSelectOffersToggleHandler));
+    Array.from(
+      this.element.querySelectorAll('.event__type-input')).forEach((element) => element.addEventListener('click', this.#eventTypeToggleHandler));
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#eventDestinationInputHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.#setDatePicker();
   };
 
   #eventTypeToggleHandler = (evt) => {
@@ -191,27 +229,44 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     if (evt.target.value) {
       this.updateElement({
-        destination: CITIES.indexOf(evt.target.value),
+        destination: evt.target.value,
+        destinations: [],
       });
     }
   };
 
-  #eventSelectOffersToggleHandler = () => {
-    const selectOffers = [];
-    Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
-      .forEach((checkbox) => checkbox.checked ? selectOffers.push(mockOffers[Number(checkbox.dataset.id)]) : '');
-    this.updateElement({
-      offers: selectOffers,
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      price: evt.target.value,
     });
   };
 
-  static parsePointToState = (point) => ({
-    ...point,
-  });
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#editClickHandler);
+  };
 
-  static parseStateToPoint = (state) => {
-    const point = { ...state };
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 
-    return point;
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit(PointEditView.parseStateToPoint(this._state));
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setEditClickHandler(this._callback.editClick);
+    this.#setDatePicker();
   };
 }

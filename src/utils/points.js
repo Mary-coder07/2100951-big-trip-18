@@ -1,15 +1,21 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 const humanizeDateDDMMYYHHmm = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const humanizeDateHHmm = (date) => dayjs(date).format('HH:mm');
 const humanizeDateMMMDD = (date) => dayjs(date).format('MMM DD');
-const num = 60;
 
-const getTimeFromMins = (mins) => {
-  const hours = Math.trunc(mins / num);
-  const days = Math.trunc(hours / 24);
-  const minutes = mins % num;
-  return `${days}D ${hours}H ${minutes}M`;
+const humanizeDateDDHHmm = (dateFrom, dateTo) => {
+  const minutes = dayjs(dateTo).diff(dayjs(dateFrom), 'minute');
+  if (minutes < 60) {
+    return dayjs.duration(minutes, 'minutes').format('mm[m]');
+  }
+  if (minutes >= 60 && minutes < 1440) {
+    return dayjs.duration(minutes, 'minutes').format('HH[h] mm[m]');
+  }
+  return dayjs.duration(minutes, 'minutes').format('DD[d] HH[h] mm[m]');
 };
 
 const ucFirst = (str) => {
@@ -35,23 +41,16 @@ const getWeightForNullDate = (dateA, dateB) => {
   return null;
 };
 
-const sortPointUp = (pointA, pointB) => {
-  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
+const sortPointsByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
-  return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
-};
-
-const sortPointTime = (pointA, pointB) => (pointB.dateTo - pointB.dateFrom) - (pointA.dateTo - pointA.dateFrom);
-
-const sortPointPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
 export {
   humanizeDateHHmm,
   humanizeDateMMMDD,
   humanizeDateDDMMYYHHmm,
-  getTimeFromMins,
+  humanizeDateDDHHmm,
   ucFirst,
-  sortPointUp,
-  sortPointPrice,
-  sortPointTime,
+  sortPointsByDay,
+  sortPointsByPrice,
 };
