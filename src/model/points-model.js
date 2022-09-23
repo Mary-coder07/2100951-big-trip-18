@@ -17,6 +17,6 @@ export default class PointsModel {
   }
 
   get destination() {
-    return this.#destination
+    return this.#destination;
   }
 }

@@ -1,7 +1,7 @@
 import { humanizeDateDDMMYYHHmm, ucFirst } from '../utils/points.js';
 import { TYPES, CITIES } from '../mock/consts.js';
 import { destinations } from '../mock/destination.js';
-import { mockOffersByType, mockOffers } from '../mock/offers.js';
+import { mockOffersByType } from '../mock/offers.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -131,7 +131,7 @@ export default class PointEditView extends AbstractStatefulView {
   #datepickerStart = null;
   #datepickerEnd = null;
 
-  constructor(point, offers, destinations) {
+  constructor(point, offers) {
     super();
     this._state = PointEditView.parsePointToState(point);
     this.#offers = offers;
