@@ -64,7 +64,7 @@ const Mode = {
 const SortType = {
   DEFAULT: 'day',
   TIME: 'time',
-  PTICE: 'price',
+  PRICE: 'price',
 };
 
 export {

@@ -6,7 +6,8 @@ import { Mode } from '../mock/consts.js';
 export default class PointPresenter {
   #eventsContainer = null;
   #point = null;
-
+  #offers = null;
+  #destinations = null;
   #changeData = null;
   #changeMode = null;
   #mode = Mode.DEFAULT;
@@ -26,14 +27,11 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new EditFormView(point);
-
-    this.#pointComponent.setEditClickHandler(this.#handleEditClick);
-    this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#pointEditComponent.setSubmitHandler(this.#handleEditClickFormSubmit);
-    this.#pointEditComponent.setCancelEditClickHandler(this.#handleEditCloseClick);
-
+    this.#pointComponent = new PointView(point, this.#offers, this.#destinations);
+    this.#pointEditComponent = new EditFormView(point, this.#offers, this.#destinations);
+    this.#pointComponent.setClickHandler(this.#handleEditClick);
+    this.#pointEditComponent.setEditClickHandler(this.#handleFormClose);
+    this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#eventsContainer);
       return;
@@ -46,6 +44,7 @@ export default class PointPresenter {
     if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
+
     remove(prevPointComponent);
     remove(prevPointEditComponent);
   };
@@ -88,17 +87,12 @@ export default class PointPresenter {
     this.#replacePointToForm();
   };
 
-  #handleEditClickFormSubmit = () => {
+  #handleFormSubmit = () => {
     this.#replaceFormToPoint();
   };
 
-  #handleEditCloseClick = () => {
+  #handleFormClose = () => {
     this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToPoint();
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-  };
-
-  #handleFavoriteClick = () => {
-    this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
   };
 }

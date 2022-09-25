@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { destinations } from '../mock/destination.js';
-import { humanizeDateHHmm, humanizeDateMMMDD, getTimeFromMins } from '../utils/points.js';
+import { humanizeDateHHmm, humanizeDateMMMDD, humanizeDateDDHHmm } from '../utils/points.js';
 
 const listPointTemplate = (point) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers, isFavorite } = point;
@@ -38,7 +38,7 @@ const listPointTemplate = (point) => {
           —
           <time class="event__end-time" datetime="2019-03-18T11:00">${humanizeDateHHmm(dateTo)}</time>
         </p>
-        <p class="event__duration">${getTimeFromMins(dateTo.diff(dateFrom, 'minute'))}</p>
+        <p class="event__duration">${humanizeDateDDHHmm(dateFrom, dateTo)}</p>
       </div>
       <p class="event__price">
         €&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -73,7 +73,7 @@ export default class PointView extends AbstractView {
     return listPointTemplate(this.#point);
   }
 
-  setEditClickHandler = (callback) => {
+  setClickHandler = (callback) => {
     this._callback.click = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   };
