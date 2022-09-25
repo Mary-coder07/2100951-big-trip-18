@@ -67,11 +67,11 @@ export default class TripPresenter {
       case SortType.DAY:
         this.#tripPoints.sort(sortPointsByDay);
         break;
-      case SortType.PTICE:
+      case SortType.PRICE:
         this.#tripPoints.sort(sortPointsByPrice);
         break;
       default:
-        this.#tripPoints = sort(sortPointUp);
+        this.#tripPoints.sort(sortPointUp);
     }
     this.#currentSortType = sortType;
   };

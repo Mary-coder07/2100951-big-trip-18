@@ -166,37 +166,37 @@ const newPointTemplate = () => `
 `;
 
 export default class NewPointView extends AbstractView {
-    #buttonAddPoint = null;
+  #buttonAddPoint = null;
 
-    constructor(createPointAdd, removePointAdd) {
-        super();
-        this._callback.getRidOf = removePointAdd;
-        this._callback.createPointAdd = createPointAdd;
-    }
+  constructor(createPointAdd, removePointAdd) {
+    super();
+    this._callback.getRidOf = removePointAdd;
+    this._callback.createPointAdd = createPointAdd;
+  }
 
-    get template() {
-        return newPointTemplate();
-    }
+  get template() {
+    return newPointTemplate();
+  }
 
-    setPointAddHandler = (button) => {
-        this.#buttonAddPoint = button;
-        this.#buttonAddPoint.addEventListener('click', this.#clickHandler);
-    };
+  setPointAddHandler = (button) => {
+    this.#buttonAddPoint = button;
+    this.#buttonAddPoint.addEventListener('click', this.#clickHandler);
+  };
 
-    #clickHandler = (evt) => {
-        evt.preventDefault();
-        this._callback.createPointAdd();
-        this.#buttonAddPoint.disabled = true;
-    };
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.createPointAdd();
+    this.#buttonAddPoint.disabled = true;
+  };
 
-    setDestroyPointAddHandler = () => {
-        this._callback.getRidOf();
-        this.element.querySelector('.event__reset-btn').addEventListener('click', this.#removePointAddHandler);
-    };
+  setDestroyPointAddHandler = () => {
+    this._callback.getRidOf();
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#removePointAddHandler);
+  };
 
-    #removePointAddHandler = (evt) => {
-        evt.preventDefault();
-        this._callback.getRidOf();
-        this.#buttonAddPoint.disabled = false;
-    };
+  #removePointAddHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.getRidOf();
+    this.#buttonAddPoint.disabled = false;
+  };
 }
