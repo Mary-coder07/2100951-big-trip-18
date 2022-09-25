@@ -25,20 +25,10 @@ const ucFirst = (str) => {
   return str[0].toUpperCase() + str.slice(1);
 };
 
-const getWeightForNullDate = (dateA, dateB) => {
-  if (dateA === null && dateB === null) {
-    return 0;
-  }
+const sortPointUp = (pointA, pointB) => {
+  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
 
-  if (dateA === null) {
-    return 1;
-  }
-
-  if (dateB === null) {
-    return -1;
-  }
-
-  return null;
+  return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 };
 
 const sortPointsByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
@@ -51,6 +41,7 @@ export {
   humanizeDateDDMMYYHHmm,
   humanizeDateDDHHmm,
   ucFirst,
+  sortPointUp,
   sortPointsByDay,
   sortPointsByPrice,
 };

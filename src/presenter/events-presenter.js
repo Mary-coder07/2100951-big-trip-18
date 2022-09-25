@@ -5,7 +5,7 @@ import SortView from '../view/sort-view.js';
 import NoEventsView from '../view/no-events-view.js';
 import { updateItem } from '../utils/common.js';
 import PointPresenter from './point-presenter.js';
-import { sortPointsByPrice, sortPointsByDay } from '../utils/points.js';
+import { sortPointUp, sortPointsByPrice, sortPointsByDay } from '../utils/points.js';
 import { SortType } from '../mock/consts.js';
 import { yellowButton } from '../main.js';
 
@@ -36,7 +36,7 @@ export default class TripPresenter {
   }
 
   init = () => {
-    this.#tripPoints = this.#pointsModel.points;
+    this.#tripPoints = [...this.#pointsModel.points];
     this.#tripOffers = this.#pointsModel.offers;
     this.#tripDestinations = this.#pointsModel.destinations;
 
@@ -48,7 +48,7 @@ export default class TripPresenter {
 
     this.#renderTripEvents();
     this.#renderSort();
-    this.#sortPoints(this.#currentSortType);
+    this.#sortPoints();
   };
 
   #handleModeChange = () => {
@@ -67,11 +67,11 @@ export default class TripPresenter {
       case SortType.DAY:
         this.#tripPoints.sort(sortPointsByDay);
         break;
-      case SortType.PRICE:
+      case SortType.PTICE:
         this.#tripPoints.sort(sortPointsByPrice);
         break;
       default:
-        this.#tripPoints = [...this.#sourcedBoardPoints];
+        this.#tripPoints = sort(sortPointUp);
     }
     this.#currentSortType = sortType;
   };
