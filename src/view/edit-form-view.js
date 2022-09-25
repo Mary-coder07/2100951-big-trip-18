@@ -155,31 +155,35 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
   #setDateStartPicker = () => {
-    if (this._state.dateFrom) {
-      this.#datepickerStart = flatpickr(
-        this.element.querySelector('#event-start-time-1'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y / h:i',
-          defaultDate: this._state.dateFrom,
-          onChange: this.#dueDateStartChangeHandler
-        }
-      );
-    }
+    const dateStartInput = this.element.querySelector('input[name="event-start-time"]');
+    const dateEndInput = this.element.querySelector('input[name="event-end-time"]');
+    this.#datepickerStart = flatpickr(
+      dateEndInput,
+      {
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: dateEndInput.value,
+        dateFormat: 'd/m/y H:i',
+        minDate: dateStartInput.value,
+        onClose: this.#dueDateStartChangeHandler,
+      },
+    );
   };
 
   #setDateEndPicker = () => {
-    if (this._state.dateTo) {
-      this.#datepickerEnd = flatpickr(
-        this.element.querySelector('#event-end-time-1'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y / h:i',
-          defaultDate: this._state.dateTo,
-          onChange: this.#dueDateEndChangeHandler,
-        }
-      );
-    }
+    const dateStartInput = this.element.querySelector('input[name="event-start-time"]');
+    const dateEndInput = this.element.querySelector('input[name="event-end-time"]');
+    this.#datepickerEnd = flatpickr(
+      dateEndInput,
+      {
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: dateEndInput.value,
+        dateFormat: 'd/m/y H:i',
+        minDate: dateStartInput.value,
+        onClose: this.#dueDateEndChangeHandler,
+      },
+    );
   };
 
   #dueDateStartChangeHandler = (dateFrom) => {
@@ -199,9 +203,9 @@ export default class PointEditView extends AbstractStatefulView {
     this.#setDateEndPicker();
   };
 
-  static parsePointToState = (point) => ({...point});
+  static parsePointToState = (point) => ({ ...point });
 
-  static parseStateToPoint = (state) => ({...state});
+  static parseStateToPoint = (state) => ({ ...state });
 
   reset = (point) => {
     this.updateElement(PointEditView.parsePointToState(point));
