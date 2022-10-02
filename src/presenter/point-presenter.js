@@ -1,7 +1,7 @@
 import { replace, render, remove } from '../framework/render.js';
-import EditFormView from '../view/edit-form-view.js';
+import PointEditView from '../view/point-edit-view.js';
 import PointView from '../view/point-view.js';
-import { Mode } from '../mock/consts.js';
+import { Mode, UserAction, UpdateType } from '../mock/consts.js';
 
 export default class PointPresenter {
   #eventsContainer = null;
@@ -21,18 +21,22 @@ export default class PointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (point) => {
+  init = (point, offers, destinations) => {
     this.#point = point;
-
+    this.#offers = offers;
+    this.#destinations = destinations;
+    
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView(point, this.#offers, this.#destinations);
-    this.#pointEditComponent = new EditFormView(point, this.#offers, this.#destinations);
+    this.#pointEditComponent = new PointEditView(point, this.#offers, this.#destinations);
     this.#pointComponent.setClickHandler(this.#handleEditClick);
     this.#pointEditComponent.setEditClickHandler(this.#handleFormClose);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    if (prevPointComponent === null || prevPointEditComponent === null) {
+    this.#pointEditComponent.setDeleteClickHandler(this.#handleFormDelete);
+    
+    if (!prevPointComponent || !prevPointEditComponent) {
       render(this.#pointComponent, this.#eventsContainer);
       return;
     }
@@ -87,8 +91,21 @@ export default class PointPresenter {
     this.#replacePointToForm();
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (point) => {
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point
+    );
     this.#replaceFormToPoint();
+  };
+
+  #handleFormDelete = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 
   #handleFormClose = () => {

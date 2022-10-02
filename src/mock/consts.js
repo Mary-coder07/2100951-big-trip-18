@@ -1,4 +1,6 @@
-const SUM_POINTS = 10;
+import dayjs from 'dayjs';
+
+const SUM_POINTS = 3;
 
 const CITY_DESC = [
   'Нет более гармоничного города в Европе, чем этот. Эпохи, стили, расы мирно сосуществуют на крохотной территории, половина из которой - вода. В переводе с голландского Амстердам означает "Дамба на реке Амстел',
@@ -67,6 +69,26 @@ const SortType = {
   PRICE: 'price',
 };
 
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const NewPoint = {
+  dateFrom: dayjs(),
+  dateTo: dayjs(),
+  type: TYPES[0],
+  basePrice: 0,
+  offers: [],
+};
+
 export {
   CITY_DESC,
   CITIES,
@@ -78,4 +100,7 @@ export {
   FilterType,
   Mode,
   SortType,
+  UserAction,
+  UpdateType,
+  NewPoint,
 };

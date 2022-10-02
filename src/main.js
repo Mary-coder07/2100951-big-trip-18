@@ -1,23 +1,28 @@
-import { render, RenderPosition } from './framework/render.js';
-import FilterView from './view/filter-view.js';
 import EventsPresenter from './presenter/events-presenter.js';
 import PointsModel from './model/points-model.js';
-import { generateFilter } from './mock/filter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
+import FilterModel from './model/filter-model.js';
 
-const pageHeaderElement = document.querySelector('.page-header');
-const filtersElement = pageHeaderElement.querySelector('.trip-controls__filters');
-const pageMainElement = document.querySelector('.page-main');
-const tripEventsElement = pageMainElement.querySelector('.trip-events');
-const yellowButton = document.querySelector('.trip-main__event-add-btn');
+const pageBodyElement = document.querySelector('.page-body__page-main');
+const eventsElement = pageBodyElement.querySelector('.trip-events');
+const siteFilterElement = document.querySelector('.trip-controls__filters');
 
 const pointsModel = new PointsModel();
-const eventsPresenter = new EventsPresenter(tripEventsElement, pointsModel);
+const filterModel = new FilterModel();
+const eventsPresenter = new EventsPresenter(eventsElement, pointsModel, filterModel);
+const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointsModel);
+const newEventBtn = document.querySelector('.trip-main__event-add-btn');
 
-if (pointsModel.points.length) {
-  const filters = generateFilter(pointsModel.points);
+const handleNewEventFormClose = () => {
+  newEventBtn.disabled = false;
+};
 
-  render(new FilterView(filters), filtersElement, RenderPosition.BEFOREBEGIN);
-}
+const handleNewEventButtonClick = () => {
+  eventsPresenter.createPoint(handleNewEventFormClose);
+  newEventBtn.disabled = true;
+};
+
+newEventBtn.addEventListener('click', handleNewEventButtonClick);
 
 eventsPresenter.init();
-export { yellowButton };
+filterPresenter.init();
