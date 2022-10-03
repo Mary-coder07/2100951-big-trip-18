@@ -1,37 +1,35 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { destinations } from '../mock/destination.js';
 import { humanizeDateHHmm, humanizeDateMMMDD, humanizeDateDDHHmm } from '../utils/points.js';
 
-const listPointTemplate = (point) => {
+const listPointTemplate = (point, offersByType, destinations) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers, isFavorite } = point;
 
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
 
-  const getDestinationName = () => {
-    for (const dest of destinations) {
-      if (destination === dest.id) {
-        return dest.name;
-      }
-    }
-  };
+  const getDestinationName = () => destinations.find((dest) => destination === dest.id).name;
 
   const createOfferTemplate = () => {
-    let offersTemplate = '';
+    const offersBySelectedType = offersByType.find((offerByType) => offerByType.type === type).offers;
+
+    let template = '';
     if (offers.length !== 0) {
-      offersTemplate = offers
-        .map((offer) => `
-      <li class="event__offer">
-       <span class="event__offer-title">${offer.title}</span>
-       &plus;&euro;&nbsp;
-       <span class="event__offer-price">${offer.price}</span>
-      </li>
-    `).join(' ');
+      offers.forEach((offerId) => {
+        const offerBySelectedType = offersBySelectedType.find((offer) => offerId === offer.id);
+        template += `
+              <li class="event__offer">
+               <span class="event__offer-title">${offerBySelectedType.title}</span>
+               &plus;&euro;&nbsp;
+               <span class="event__offer-price">${offerBySelectedType.price}</span>
+              </li>`;
+      });
     }
-    return offersTemplate;
+    return template;
   };
 
+  const offersTemplate = createOfferTemplate();
+
   return (`
-  <li class="trip-events__item">
+   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateFrom}">${humanizeDateMMMDD(dateFrom)}</time>
       <div class="event__type">
@@ -47,10 +45,11 @@ const listPointTemplate = (point) => {
         <p class="event__duration">${humanizeDateDDHHmm(dateFrom, dateTo)}</p>
       </div>
       <p class="event__price">
-       €&nbsp;<span class="event__price-value">${Math.abs(Number(basePrice))}</span>      </p>
+        €&nbsp;<span class="event__price-value">${Math.abs(Number(basePrice))}</span>
+      </p>
       <h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
-       ${createOfferTemplate()}
+      <ul class="event__selected-offers ${!offersTemplate ? 'visually-hidden' : ''}">
+       ${offersTemplate}
       </ul>
       <button class="event__favorite-btn ${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -67,15 +66,27 @@ const listPointTemplate = (point) => {
 };
 
 export default class PointView extends AbstractView {
-  #point = null;
+  
+  #offersByType = null;
+  #destinations = null;
 
-  constructor(point) {
+  constructor(point, offersByType, destinations) {
     super();
-    this.#point = point;
+    this._state = PointView.parsePointToState(point);
+    this.#offersByType = offersByType;
+    this.#destinations = destinations;
   }
 
+  static parsePointToState = (point) => ({...point});
+
+  static parseStateToPoint = (state) => ({...state});
+
+  reset = (point) => {
+    this.updateElement(PointView.parsePointToState(point));
+  };
+
   get template() {
-    return listPointTemplate(this.#point);
+    return listPointTemplate(this._state, this.#offersByType, this.#destinations);
   }
 
   setClickHandler = (callback) => {
@@ -93,8 +104,7 @@ export default class PointView extends AbstractView {
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   };
 
-  #favoriteClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.favoriteClick();
+  #favoriteClickHandler = () => {
+    this._callback.favoriteClick(PointView.parsePointToState(this._state));
   };
 }

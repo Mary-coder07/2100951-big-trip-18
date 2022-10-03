@@ -6,7 +6,6 @@ dayjs.extend(duration);
 const humanizeDateDDMMYYHHmm = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const humanizeDateHHmm = (date) => dayjs(date).format('HH:mm');
 const humanizeDateMMMDD = (date) => dayjs(date).format('MMM DD');
-const templateCurrentTime = () => dayjs.duration().format();
 
 const humanizeDateDDHHmm = (dateFrom, dateTo) => {
   const minutes = dayjs(dateTo).diff(dayjs(dateFrom), 'minute');
@@ -60,6 +59,5 @@ export {
   getWeightForNullDate,
   sortPointUp,
   sortPointsByDay,
-  templateCurrentTime,
   sortPointsByPrice,
 };
