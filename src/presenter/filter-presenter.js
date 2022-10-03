@@ -1,7 +1,7 @@
-import {render, replace, remove, RenderPosition} from '../framework/render.js';
+import { render, replace, remove, RenderPosition } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
-import {filter} from '../utils/filter.js';
-import {FilterType, UpdateType} from '../mock/consts.js';
+import { filter } from '../utils/filter.js';
+import { FilterType, UpdateType } from '../mock/consts.js';
 
 export default class FilterPresenter {
   #filterContainer = null;
@@ -15,8 +15,8 @@ export default class FilterPresenter {
     this.#filterModel = filterModel;
     this.#pointsModel = pointsModel;
 
-    this.#pointsModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#pointsModel.addObserver(this.init);
+    this.#filterModel.addObserver(this.init);
   }
 
   get filters() {
@@ -40,30 +40,23 @@ export default class FilterPresenter {
       },
     ];
   }
-
-  init() {
+  init = () => {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
     this.#filterComponent = new FilterView(filters);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
-
     if (!prevFilterComponent) {
       render(this.#filterComponent, this.#filterContainer, RenderPosition.BEFOREEND);
       return;
     }
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
-  }
-
-  #handleModelEvent = () => {
-    this.init();
   };
 
   #handleFilterTypeChange = (filterType) => {
     if (this.#filterModel.filter === filterType) {
       return;
     }
-
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   };
 }

@@ -2,7 +2,7 @@ import { render, remove, RenderPosition } from '../framework/render.js';
 
 import {nanoid} from 'nanoid';
 
-import EditPointView from '../view/point-edit-view.js';
+import PointEditView from '../view/point-edit-view.js';
 
 import { UserAction, UpdateType } from '../mock/consts.js';
 
@@ -24,7 +24,7 @@ export default class NewPointPresenter {
       return;
     }
 
-    this.#pointEditComponent = new EditPointView();
+    this.#pointEditComponent = new PointEditView();
 
     this.#pointEditComponent.setFormSubmitHandler(this.#handleEditClickFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleEditCloseClick);
