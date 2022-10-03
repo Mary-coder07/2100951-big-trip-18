@@ -48,9 +48,12 @@ export default class SortView extends AbstractView {
   };
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.type !== 'radio') {
+    if (evt.target.tagName !== 'LABEL') {
       return;
     }
+
+    evt.preventDefault();
+    evt.target.control.checked = true;
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   };
 }
