@@ -38,12 +38,20 @@ const BlankNewPoint = {
   type: 'taxi',
   basePrice: '',
   offers: [],
-  destinations: 0,
+  destinations: '',
+  isNewPoint: true,
 };
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
+};
+
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 export {
@@ -54,5 +62,6 @@ export {
   UserAction,
   UpdateType,
   BlankNewPoint,
-  TimeLimit
+  TimeLimit,
+  Method
 };

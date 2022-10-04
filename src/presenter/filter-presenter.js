@@ -15,8 +15,8 @@ export default class FilterPresenter {
     this.#filterModel = filterModel;
     this.#pointsModel = pointsModel;
 
-    this.#pointsModel.addObserver(this.init);
-    this.#filterModel.addObserver(this.init);
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get filters() {
@@ -44,22 +44,27 @@ export default class FilterPresenter {
   init = () => {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
-    this.#filterComponent = new FilterView(filters);
+
+    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
-   
-    if (!prevFilterComponent) {
-      render(this.#filterComponent, this.#filterContainer, RenderPosition.BEFOREEND);
+
+    if (prevFilterComponent === null) {
+      render(this.#filterComponent, this.#filterContainer);
       return;
     }
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
   };
 
+  #handleModelEvent = () => {
+    this.init();
+  };
+
   #handleFilterTypeChange = (filterType) => {
-    
     if (this.#filterModel.filter === filterType) {
       return;
     }
+
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   };
 }

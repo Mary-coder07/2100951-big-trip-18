@@ -1,11 +1,5 @@
 import ApiService from './framework/api-service.js';
-
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
-  POST: 'POST',
-  DELETE: 'DELETE',
-};
+import { Method } from './mock/consts.js';
 
 export default class PointApiService extends ApiService {
   get points() {

@@ -4,7 +4,7 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import FilterModel from './model/filter-model.js';
 import PointsApiService from './points-api-service.js';
 
-const AUTHORIZATION = 'Basic dmFsZW50aW5fMDA3OTRAYmsucnU6UEBzc3cwcmQzMg==';
+const AUTHORIZATION = 'Basic dmFsZW50aW5fMDA3OTRAYmsucnU6UEBzc3cwcmQzMg=';
 const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
 const pageBodyElement = document.querySelector('.page-body__page-main');
@@ -33,6 +33,5 @@ newEventBtn.disabled = true;
 
 pointsModel.init()
   .finally(() => {
-    handleNewEventFormClose();
     newEventBtn.addEventListener('click', handleNewEventButtonClick);
   });

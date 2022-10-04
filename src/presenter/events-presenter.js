@@ -72,14 +72,8 @@ export default class EventsPresenter {
     this.#pointsPresenter.set(point.id, pointPresenter);
   };
 
-  #renderPoints = () => {
-    for (let i = 0; i < this.points.length; i++) {
-      this.#renderPoint(this.points[i]);
-    }
-  };
-
   #renderEmptyContentList = () => {
-    this.#emptyComponent = new NoEventsView(this.#filterType);
+    this.#emptyComponent = new NoEventsView(this.#filterType, this.#getNoDataPhrase());
     render(this.#emptyComponent, this.#contentContainer);
   };
 
@@ -117,7 +111,7 @@ export default class EventsPresenter {
         this.#pointsPresenter.get(update.id).setSaving();
         try {
           await this.#pointsModel.updatePoint(updateType, update);
-        } catch(err) {
+        } catch (err) {
           this.#pointsPresenter.get(update.id).setAborting();
         }
         break;
@@ -125,7 +119,7 @@ export default class EventsPresenter {
         this.#newPointPresenter.setSaving();
         try {
           await this.#pointsModel.addPoint(updateType, update);
-        } catch(err) {
+        } catch (err) {
           this.#newPointPresenter.setAborting();
         }
         break;
@@ -133,7 +127,7 @@ export default class EventsPresenter {
         this.#pointsPresenter.get(update.id).setDeleting();
         try {
           await this.#pointsModel.deletePoint(updateType, update);
-        } catch(err) {
+        } catch (err) {
           this.#pointsPresenter.get(update.id).setAborting();
         }
         break;
@@ -167,6 +161,12 @@ export default class EventsPresenter {
     this.#pointsPresenter.forEach((presenter) => presenter.resetView());
   };
 
+  #getNoDataPhrase() {
+    if (!this.#pointsModel.offers.length || !this.#pointsModel.destinations.length) {
+      return NoDataMessage;
+    }
+  }
+
   #clearContent = ({ resetSortType = false } = {}) => {
 
     this.#newPointPresenter.destroy();
@@ -195,15 +195,22 @@ export default class EventsPresenter {
       return;
     }
 
-    const pointCount = this.points.length;
-    
-    if (pointCount === 0) {
+    if (!this.#pointsModel.offers.length || !this.#pointsModel.destinations.length) {
+      this.#sortComponent.setSortDisabled();
+    }
+
+    const points = this.points;
+    const pointsCount = points.length;
+    this.#renderSort();
+    this.#renderTripInfo();
+
+    if (pointsCount === 0) {
       this.#renderEmptyContentList();
       return;
     }
 
-    this.#renderSort();
-    this.#renderTripInfo();
-    this.#renderPoints();
+    for (let i = 0; i < pointsCount; i++) {
+      this.#renderPoint(this.points[i]);
+    }
   };
 }
