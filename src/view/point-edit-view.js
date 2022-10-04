@@ -3,6 +3,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { humanizeDateDDMMYYHHmm, ucFirst } from '../utils/points.js';
 import he from 'he';
+import dayjs from 'dayjs';
 
 const editPointTemplate = (point, offersByType, destinations, cities) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers, isSaving, isDeleting, isDisabled, isNewPoint } = point;

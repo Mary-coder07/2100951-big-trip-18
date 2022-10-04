@@ -6,7 +6,7 @@ import NewPointPresenter from './new-point-presenter.js';
 import PointPresenter from './point-presenter.js';
 import { sortPointUp, sortPointsByPrice, sortPointsByDay } from '../utils/points.js';
 import { filter } from '../utils/filter.js';
-import { SortType, UpdateType, UserAction, FilterType, TimeLimit } from '../mock/consts.js';
+import { SortType, UpdateType, UserAction, FilterType, TimeLimit, NoDataMessage } from '../mock/consts.js';
 import TripInfoView from '../view/trip-info-view.js';
 import { generateTripInfo } from '../mock/trip-info.js';
 import LoadingView from '../view/loading-view.js';
