@@ -32,12 +32,18 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-const NewPoint = {
+const BlankNewPoint = {
   dateFrom: dayjs(),
   dateTo: dayjs(),
   type: 'taxi',
-  basePrice: 0,
+  basePrice: '',
   offers: [],
+  destinations: 0,
+};
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
 };
 
 export {
@@ -47,5 +53,6 @@ export {
   SortType,
   UserAction,
   UpdateType,
-  NewPoint,
+  BlankNewPoint,
+  TimeLimit
 };

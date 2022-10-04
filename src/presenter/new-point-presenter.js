@@ -1,12 +1,8 @@
 import { render, remove, RenderPosition } from '../framework/render.js';
-
-import { nanoid } from 'nanoid';
-
 import PointEditView from '../view/point-edit-view.js';
+import { UserAction, UpdateType, BlankNewPoint } from '../mock/consts.js';
 
-import { UserAction, UpdateType, NewPoint } from '../mock/consts.js';
-
-export default class NewPointPresenter {
+export default class BlankNewPointPresenter {
   #contentList = null;
   #changeData = null;
   #pointEditComponent = null;
@@ -28,7 +24,7 @@ export default class NewPointPresenter {
       return;
     }
 
-    this.#pointEditComponent = new PointEditView(NewPoint, this.#offers, this.#destinations);
+    this.#pointEditComponent = new PointEditView(BlankNewPoint, this.#offers, this.#destinations);
 
     this.#pointEditComponent.setFormSubmitHandler(this.#handleEditClickFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleEditCloseClick);
@@ -52,9 +48,29 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
+  setSaving = () => {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (evt.target.classList.contains('event__input--time')){
+      evt.target.blur();
+    }
+    if (!evt.target.classList.contains('event__input--time') && (evt.key === 'Escape' || evt.key === 'Esc')) {
       evt.preventDefault();
       this.destroy();
     }
@@ -64,7 +80,7 @@ export default class NewPointPresenter {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      { id: nanoid(), ...point },
+      point,
     );
   };
 
@@ -73,5 +89,3 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 }
-
-
