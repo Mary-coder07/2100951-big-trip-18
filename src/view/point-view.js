@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDateHHmm, humanizeDateMMMDD, humanizeDateDDHHmm } from '../utils/points.js';
 import he from 'he';
 
-const listPointTemplate = (point, offersByType, destinations) => {
+const createPointTemplate = (point, offersByType, destinations) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers, isFavorite } = point;
 
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
@@ -46,7 +46,8 @@ const listPointTemplate = (point, offersByType, destinations) => {
         <p class="event__duration">${humanizeDateDDHHmm(dateFrom, dateTo)}</p>
       </div>
       <p class="event__price">
-      €&nbsp;<span class="event__price-value">${basePrice}</span> </p>
+        €&nbsp;<span class="event__price-value">${basePrice}</span>
+      </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers ${!offersTemplate ? 'visually-hidden' : ''}">
        ${offersTemplate}
@@ -65,30 +66,22 @@ const listPointTemplate = (point, offersByType, destinations) => {
   `);
 };
 
-export default class PointView extends AbstractView {
-  
+export default class ListPointView extends AbstractView {
+  #point = null;
   #offersByType = null;
   #destinations = null;
 
   constructor(point, offersByType, destinations) {
     super();
-    this._state = PointView.parsePointToState(point);
+    this.#point = point;
     this.#offersByType = offersByType;
     this.#destinations = destinations;
   }
 
-  static parsePointToState = (point) => ({...point});
-
-  static parseStateToPoint = (state) => ({...state});
-
-  reset = (point) => {
-    this.updateElement(PointView.parsePointToState(point));
-  };
-
   get template() {
-    return listPointTemplate(this._state, this.#offersByType, this.#destinations);
+    return createPointTemplate(this.#point, this.#offersByType, this.#destinations);
   }
-
+ 
   setClickHandler = (callback) => {
     this._callback.click = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
@@ -105,6 +98,6 @@ export default class PointView extends AbstractView {
   };
 
   #favoriteClickHandler = () => {
-    this._callback.favoriteClick(PointView.parsePointToState(this._state));
+    this._callback.favoriteClick();
   };
 }

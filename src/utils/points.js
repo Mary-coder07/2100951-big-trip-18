@@ -41,14 +41,13 @@ const getWeightForNullDate = (dateA, dateB) => {
   return null;
 };
 
-const sortPointUp = (pointA, pointB) => {
-  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
+const getDurationEventInMin = (dateFrom, dateTo) => dayjs(dateTo).diff(dayjs(dateFrom), 'minute');
 
-  return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
-};
+const sortByPrice = (a, b) => b.basePrice - a.basePrice;
 
-const sortPointsByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
-const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+const sortByTime = (a, b) => getDurationEventInMin(b.dateFrom, b.dateTo) - getDurationEventInMin(a.dateFrom, a.dateTo);
+
+const sortByDay = (a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom));
 
 export {
   humanizeDateHHmm,
@@ -57,7 +56,7 @@ export {
   humanizeDateDDHHmm,
   ucFirst,
   getWeightForNullDate,
-  sortPointUp,
-  sortPointsByDay,
-  sortPointsByPrice,
+  sortByPrice,
+  sortByTime,
+  sortByDay,
 };

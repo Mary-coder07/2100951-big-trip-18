@@ -1,10 +1,10 @@
 import { render, RenderPosition, remove } from '../framework/render.js';
-import EventsListView from '../view/events-list-view.js';
+import PointListView from '../view/points-list-view.js';
 import SortView from '../view/sort-view.js';
-import NoEventsView from '../view/no-events-view.js';
+import NoPointsView from '../view/no-points-view.js';
 import NewPointPresenter from './new-point-presenter.js';
 import PointPresenter from './point-presenter.js';
-import { sortPointUp, sortPointsByPrice, sortPointsByDay } from '../utils/points.js';
+import { sortByPrice, sortByTime, sortByDay } from '../utils/points.js';
 import { filter } from '../utils/filter.js';
 import { SortType, UpdateType, UserAction, FilterType, TimeLimit, NoDataMessage } from '../mock/consts.js';
 import TripInfoView from '../view/trip-info-view.js';
@@ -12,12 +12,12 @@ import { generateTripInfo } from '../mock/trip-info.js';
 import LoadingView from '../view/loading-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
-export default class EventsPresenter {
+export default class TripPresenter {
   #contentContainer = null;
   #pointsModel = null;
   #filterModel = null;
 
-  #contentListComponent = new EventsListView();
+  #contentListComponent = new PointListView();
   #loadingComponent = new LoadingView();
   #emptyComponent = null;
   #sortComponent = null;
@@ -47,13 +47,14 @@ export default class EventsPresenter {
     const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
+      case SortType.DAY:
+        return filteredPoints.sort(sortByDay);
       case SortType.TIME:
-        return filteredPoints.sort(sortPointsByDay);
-      case SortType.PTICE:
-        return filteredPoints.sort(sortPointsByPrice);
-      default:
-        return filteredPoints.sort(sortPointUp);
+        return filteredPoints.sort(sortByTime);
+      case SortType.PRICE:
+        return filteredPoints.sort(sortByPrice);
     }
+    return filteredPoints;
   }
 
   init = () => {
@@ -73,7 +74,7 @@ export default class EventsPresenter {
   };
 
   #renderEmptyContentList = () => {
-    this.#emptyComponent = new NoEventsView(this.#filterType, this.#getNoDataPhrase());
+    this.#emptyComponent = new NoPointsView(this.#filterType, this.#getNoDataPhrase());
     render(this.#emptyComponent, this.#contentContainer);
   };
 
