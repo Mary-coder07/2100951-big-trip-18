@@ -3,16 +3,19 @@ import duration from 'dayjs/plugin/duration';
 
 dayjs.extend(duration);
 
+const MINUTES = 60;
+const SECONDS = 1440;
+
 const humanizeDateDDMMYYHHmm = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const humanizeDateHHmm = (date) => dayjs(date).format('HH:mm');
 const humanizeDateMMMDD = (date) => dayjs(date).format('MMM DD');
 
 const humanizeDateDDHHmm = (dateFrom, dateTo) => {
   const minutes = dayjs(dateTo).diff(dayjs(dateFrom), 'minute');
-  if (minutes < 60) {
+  if (minutes < MINUTES) {
     return dayjs.duration(minutes, 'minutes').format('mm[m]');
   }
-  if (minutes >= 60 && minutes < 1440) {
+  if (minutes >= MINUTES && minutes < SECONDS) {
     return dayjs.duration(minutes, 'minutes').format('HH[h] mm[m]');
   }
   return dayjs.duration(minutes, 'minutes').format('DD[d] HH[h] mm[m]');
