@@ -2,6 +2,7 @@ import { replace, render, remove } from '../framework/render.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointView from '../view/point-view.js';
 import { Mode, UserAction, UpdateType } from '../mock/consts.js';
+import { isEscPressed } from '../mock/consts.js';
 
 export default class PointPresenter {
   #pointListContainer = null;

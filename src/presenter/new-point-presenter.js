@@ -1,6 +1,7 @@
 import { render, remove, RenderPosition } from '../framework/render.js';
 import PointEditView from '../view/point-edit-view.js';
 import { UserAction, UpdateType, BlankNewPoint } from '../mock/consts.js';
+import { isEscPressed } from '../mock/consts.js';
 
 export default class BlankNewPointPresenter {
   #contentList = null;
@@ -40,7 +41,7 @@ export default class BlankNewPointPresenter {
     }
 
     this.#destroyCallback?.();
-    
+
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
 
@@ -66,7 +67,7 @@ export default class BlankNewPointPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.target.classList.contains('event__input--time')){
+    if (evt.target.classList.contains('event__input--time')) {
       evt.target.blur();
     }
     if (!evt.target.classList.contains('event__input--time') && (isEscPressed(evt))) {
