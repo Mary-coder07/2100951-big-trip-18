@@ -14,9 +14,9 @@ const Mode = {
 };
 
 const SortType = {
-  DEFAULT: 'day',
-  TIME: 'time',
-  PRICE: 'price',
+  DAY: 'sort-day',
+  TIME: 'sort-time',
+  PRICE: 'sort-price',
 };
 
 const UserAction = {
@@ -54,6 +54,10 @@ const Method = {
   DELETE: 'DELETE',
 };
 
+const NoDataMessage = 'Ooops! Something went wrong. Please try again later...';
+
+const isEscPressed = (evt) => (evt.key === 'Escape' || evt.key === 'Esc');
+
 export {
   SUM_POINTS,
   FilterType,
@@ -63,5 +67,7 @@ export {
   UpdateType,
   BlankNewPoint,
   TimeLimit,
-  Method
+  Method,
+  NoDataMessage,
+  isEscPressed
 };

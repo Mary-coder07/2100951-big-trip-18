@@ -25,7 +25,6 @@ export default class BlankNewPointPresenter {
     }
 
     this.#pointEditComponent = new PointEditView(BlankNewPoint, this.#offers, this.#destinations);
-
     this.#pointEditComponent.setFormSubmitHandler(this.#handleEditClickFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleEditCloseClick);
     this.#pointEditComponent.setEditClickHandler(this.#handleEditCloseClick);
@@ -33,7 +32,6 @@ export default class BlankNewPointPresenter {
     render(this.#pointEditComponent, this.#contentList.element, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
-
   };
 
   destroy = () => {
@@ -42,6 +40,7 @@ export default class BlankNewPointPresenter {
     }
 
     this.#destroyCallback?.();
+    
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
 
@@ -70,7 +69,7 @@ export default class BlankNewPointPresenter {
     if (evt.target.classList.contains('event__input--time')){
       evt.target.blur();
     }
-    if (!evt.target.classList.contains('event__input--time') && (evt.key === 'Escape' || evt.key === 'Esc')) {
+    if (!evt.target.classList.contains('event__input--time') && (isEscPressed(evt))) {
       evt.preventDefault();
       this.destroy();
     }

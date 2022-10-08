@@ -12,7 +12,7 @@ const createNoPointTemplate = (filterType) => {
   return `<p class="trip-events__msg">${createNoPointsText}</p>`;
 };
 
-export default class NoEventsView extends AbstractView {
+export default class NoPointsView extends AbstractView {
   #filterType = null;
 
   constructor(filterType) {

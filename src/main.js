@@ -1,4 +1,4 @@
-import EventsPresenter from './presenter/events-presenter.js';
+import TripPresenter from './presenter/trip-presenter.js';
 import PointsModel from './model/points-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import FilterModel from './model/filter-model.js';
@@ -13,7 +13,7 @@ const siteFilterElement = document.querySelector('.trip-controls__filters');
 
 const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
-const eventsPresenter = new EventsPresenter(eventsElement, pointsModel, filterModel);
+const eventsPresenter = new TripPresenter(eventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointsModel);
 const newEventBtn = document.querySelector('.trip-main__event-add-btn');
 

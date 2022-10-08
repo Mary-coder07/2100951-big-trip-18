@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDateMMMDD } from '../utils/points.js';
 
-const tripInfoTemplate = (tripInfo) => `
+const createTripInfoTemplate = (tripInfo) => `
  <section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
    <h1 class="trip-info__title">${tripInfo.tripTitle}</h1>
@@ -21,6 +21,6 @@ export default class TripInfoView extends AbstractView {
   }
 
   get template() {
-    return tripInfoTemplate(this.#tripInfo);
+    return createTripInfoTemplate(this.#tripInfo);
   }
 }
